@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coordenação · Horários · UNIFEB</title>
+  <style>
+    :root {
+      /* Palette do Controle de Chamados UNIFEB */
+      --bg: #0b111e;              
+      --card-bg: #131e2e;         
+      --card-border: #1d2b3e;     
+      --header-bg: #101927;       
+      --divider-color: #1a2738;   
+      
+      --gold-accent: #fbc02d;     
+      --blue-accent: #00a3ff;     
+      --text-white: #ffffff;
+      --text-muted: #94a3b8;
+      
+      /* Linhas zebradas */
+      --row-odd: #182538;
+      --row-even: #131e2e;
+      
+      /* Destaque HOJE Nítido */
+      --today-bg: #1e3a5f;
+      --today-header: #0284c7;
+
+      /* Pílulas de Horário com Borda Nítida */
+      --m-bg: #262010; 
+      --m-fg: #fde047; 
+      --m-border: #eab308;
+
+      --t-bg: #0c2840; 
+      --t-fg: #38bdf8; 
+      --t-border: #0284c7;
+
+      --n-bg: #291238; 
+      --n-fg: #f0abfc; 
+      --n-border: #9333ea;
+
+      --on-bg: #059669; 
+      --on-fg: #ffffff; 
+      --on-border: #10b981;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text-white);
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: subpixel-antialiased;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1.2vh 1.5vw;
+      gap: 1vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--card-bg);
+      padding: 0.8vh 1.4vw;
+      border-radius: 6px;
+      border: 1px solid var(--card-border);
+      border-left: 4px solid var(--gold-accent);
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1.2vw;
+    }
+
+    .brand img {
+      height: 4.2vh;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .brand-text h1 {
+      font-size: 2.2vh;
+      font-weight: 700;
+      color: var(--text-white);
+      line-height: 1.1;
+    }
+
+    .brand-text small {
+      display: block;
+      font-size: 1.15vh;
+      color: var(--gold-accent);
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 0.2vh;
+    }
+
+    .clock {
+      text-align: right;
+    }
+
+    .clock b {
+      font-size: 3vh;
+      font-weight: 700;
+      color: var(--text-white);
+    }
+
+    .clock span {
+      display: block;
+      font-size: 1.15vh;
+      color: var(--text-muted);
+      text-transform: capitalize;
+      font-weight: 600;
+    }
+
+    .panels {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 1vw;
+      flex-shrink: 0;
+    }
+
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.7vh 1vw;
+    }
+
+    .panel h2 {
+      font-size: 1.15vh;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-accent);
+      margin-bottom: 0.4vh;
+      font-weight: 700;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4vw;
+    }
+
+    .chip {
+      background: #101a28;
+      border: 1px solid var(--card-border);
+      border-radius: 4px;
+      padding: 0.25vh 0.7vw;
+      font-size: 1.25vh;
+      font-weight: 600;
+      color: #cbd5e1;
+    }
+
+    .chip b {
+      font-weight: 700;
+      color: #ffffff;
+    }
+
+    .chip.now {
+      background: #064e3b;
+      color: #ffffff;
+      border: 1px solid #10b981;
+      font-weight: 700;
+    }
+
+    .table-card {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 0.3vh 0.4vw;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .table-grid {
+      display: grid;
+      grid-template-rows: repeat(18, minmax(0, 1fr));
+      height: 100%;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 18vw repeat(6, 1fr);
+      align-items: center;
+      border-bottom: 1px solid var(--divider-color);
+      height: 100%;
+    }
+
+    .row.header {
+      background: var(--header-bg);
+      font-weight: 700;
+      font-size: 1.25vh;
+      color: var(--gold-accent);
+      text-transform: uppercase;
+      border-bottom: 2px solid var(--card-border);
+    }
+
+    .row:not(.header):nth-child(odd) {
+      background: var(--row-odd);
+    }
+
+    .row:not(.header):nth-child(even) {
+      background: var(--row-even);
+    }
+
+    /* Centralização perfeita das células e respiro dos nomes */
+    .cell {
+      padding: 0 0.4vw;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4vw;
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .cell.name-col {
+      justify-content: flex-start;
+      padding-left: 0.8vw;
+    }
+
+    .row.header .cell {
+      border-right: 1px solid var(--card-border);
+    }
+
+    .cell.today {
+      background-color: var(--today-bg) !important;
+      border-left: 1px solid #0284c7;
+      border-right: 1px solid #0284c7;
+    }
+
+    .row.header .cell.today {
+      background-color: var(--today-header) !important;
+      color: #ffffff !important;
+    }
+
+    .name {
+      font-weight: 600;
+      font-size: 1.45vh;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .badge {
+      font-size: 1.2vh;
+      font-weight: 700;
+      padding: 0.25vh 0.55vw;
+      border-radius: 4px;
+      white-space: nowrap;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .badge.m { 
+      background: var(--m-bg); 
+      color: var(--m-fg); 
+      border: 1.5px solid var(--m-border); 
+    }
+
+    .badge.t { 
+      background: var(--t-bg); 
+      color: var(--t-fg); 
+      border: 1.5px solid var(--t-border); 
+    }
+
+    .badge.n { 
+      background: var(--n-bg); 
+      color: var(--n-fg); 
+      border: 1.5px solid var(--n-border); 
+    }
+
+    .badge.on { 
+      background: var(--on-bg); 
+      color: var(--on-fg); 
+      border: 1.5px solid var(--on-border); 
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); 
+    }
+
+    footer {
+      display: flex;
+      justify-content: center;
+      gap: 1.8vw;
+      font-size: 1.2vh;
+      color: var(--text-muted);
+      align-items: center;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <img src="https://raw.githubusercontent.com/unifebarretos/assets/main/logo-UNIFEB.png" alt="UNIFEB" onerror="this.src='logo-UNIFEB.png'">
+        <div class="brand-text">
+          <h1>Horário de Coordenação</h1>
+          <small>SISTEMA DE GERENCIAMENTO · UNIFEB</small>
+        </div>
+      </div>
+      <div class="clock">
+        <b id="ck">--:--</b>
+        <span id="dt"></span>
+      </div>
+    </header>
+
+    <div class="panels">
+      <div class="panel">
+        <h2>Na sala agora</h2>
+        <div class="chips" id="A"></div>
+      </div>
+      <div class="panel">
+        <h2>Chegam hoje</h2>
+        <div class="chips" id="B"></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-grid" id="tb"></div>
+    </div>
+
+    <footer>
+      <span class="badge m">Manhã</span>
+      <span class="badge t">Tarde</span>
+      <span class="badge n">Noite</span>
+      <span class="badge on">Em Atendimento Agora</span>
+      <span>• Coluna azul destacada = Dia de Hoje</span>
+    </footer>
+  </div>
+
+  <script>
+    /* DADOS OFICIAIS EXTRAÍDOS DIRETO DO PDF 2º SEMESTRE 2026 */
+    const D = [
+      ["Ana Carolina Souza", {2:"9-13,18-19", 3:"13-17", 4:"13-17,18-22", 5:"9-12,13-18"}],
+      ["Fabio Nóbile", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Helenara Silva", {1:"13-18", 2:"13-18", 4:"13-18"}],
+      ["Karina Macari", {1:"9-12", 2:"17-19", 3:"14-18", 4:"14-17,19-22"}],
+      ["Leonardo Costa", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Leticia Catani", {1:"9-13,18-22", 2:"9-13,18-19", 3:"13-18", 4:"9-13,18-19", 5:"13-18"}],
+      ["Lucas Orlovic", {1:"17-19", 2:"17-19", 3:"14-18", 4:"17-19", 5:"10-12,16-19"}],
+      ["Marcelo Bezerra", {2:"18-22", 3:"16-19", 4:"18-19", 5:"17-19"}],
+      ["Maria Clara Calil", {1:"13-18", 2:"13-17,19-22", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Paulo Buzati", {2:"13-18", 3:"13-18"}],
+      ["Regilene Steluti", {1:"12-17", 2:"13-18", 3:"13-18", 4:"13-18", 5:"11-16"}],
+      ["Renata Camacho", {1:"13-18,19-22", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Tadeu Almeida", {1:"16.5-19", 2:"16.5-19", 3:"16.5-19", 4:"16.5-19", 5:"16.5-19", 6:"9-15"}],
+      ["Vanilda Bistaffa", {1:"20-22", 2:"9-12,17-19", 3:"14-18,19-22", 4:"17-18"}],
+      ["Vicente Junior", {1:"17-19", 2:"16-19", 3:"16-19", 4:"16-19", 5:"17-19", 6:"9-11"}],
+      ["Willians Bueno", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Lucimara Ferreira", {1:"8-12,13-17", 2:"12-17", 3:"13-18", 4:"13-18", 5:"13-18", 6:"9-12"}]
+    ];
+
+    const DN = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+    const P = s => s.split(",").map(x => x.split("-").map(Number));
+    const f = h => { const m = Math.round((h % 1) * 60); return Math.floor(h) + "h" + (m ? String(m).padStart(2, "0") : ""); };
+    const per = a => a < 12 ? "m" : a < 18 ? "t" : "n";
+
+    function draw() {
+      const d = new Date();
+      const wd = d.getDay();
+      const h = d.getHours() + d.getMinutes() / 60;
+
+      document.getElementById("ck").textContent = d.toTimeString().slice(0, 5);
+      document.getElementById("dt").textContent = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+
+      const a = [], b = [];
+      D.forEach(([n, w]) => {
+        const sl = w[wd] ? P(w[wd]) : [];
+        const cur = sl.find(([x, y]) => h >= x && h < y);
+        const nx = sl.filter(([x]) => x > h).sort((p, q) => p[0] - q[0])[0];
+        if (cur) a.push([n, "até " + f(cur[1])]);
+        else if (nx) b.push([n, nx[0]]);
+      });
+
+      b.sort((p, q) => p[1] - q[1]);
+
+      document.getElementById("A").innerHTML = a.length 
+        ? a.map(([n, t]) => `<div class="chip now"><b>${n}</b> (${t})</div>`).join("") 
+        : `<span style="color:var(--text-muted)">Ninguém na sala neste momento</span>`;
+
+      document.getElementById("B").innerHTML = b.length 
+        ? b.map(([n, t]) => `<div class="chip">${n} às <b>${f(t)}</b></div>`).join("") 
+        : `<span style="color:var(--text-muted)">Ninguém mais chega hoje</span>`;
+
+      const days = [1, 2, 3, 4, 5, 6];
+      let html = `<div class="row header"><div class="cell name-col">Coordenador(a)</div>` + 
+        days.map(x => `<div class="cell ${x === wd ? 'today' : ''}">${DN[x]} ${x === wd ? '· HOJE' : ''}</div>`).join("") + `</div>`;
+
+      html += D.map(([n, w]) => {
+        return `<div class="row"><div class="cell name-col name">${n}</div>` +
+          days.map(x => {
+            const s = w[x];
+            return `<div class="cell ${x === wd ? 'today' : ''}">` + 
+              (s ? P(s).map(([p, q]) => `<span class="badge ${x === wd && h >= p && h < q ? 'on' : per(p)}">${f(p)}–${f(q)}</span>`).join("") : '—') + 
+              `</div>`;
+          }).join("") + `</div>`;
+      }).join("");
+
+      document.getElementById("tb").innerHTML = html;
+    }
+
+    draw();
+    setInterval(draw, 15000);
+  </script>
+</body>
+</html>
