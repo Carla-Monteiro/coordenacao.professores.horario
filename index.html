@@ -2,39 +2,411 @@
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="refresh" content="60">
-  <title>Coordenação UNIFEB</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coordenação · Horários · UNIFEB</title>
+  <link rel="icon" href="data:,">
   <style>
-    body { background-color: #0b111e; color: #ffffff; font-family: sans-serif; padding: 20px; }
-    h1 { color: #fbc02d; text-align: center; }
-    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-    th, td { border: 1px solid #1d2b3e; padding: 10px; text-align: center; }
-    th { background-color: #101927; color: #fbc02d; }
-    tr:nth-child(even) { background-color: #131e2e; }
-    tr:nth-child(odd) { background-color: #182538; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #0b111e;
+      color: #ffffff;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1.2vh 1.5vw;
+      gap: 1vh;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #131e2e;
+      padding: 0.8vh 1.4vw;
+      border-radius: 6px;
+      border: 1px solid #1d2b3e;
+      border-left: 4px solid #fbc02d;
+      flex-shrink: 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1.2vw;
+    }
+
+    .brand img {
+      height: 4.2vh;
+      width: auto;
+    }
+
+    .brand-text h1 {
+      font-size: 2.2vh;
+      font-weight: bold;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .brand-text small {
+      display: block;
+      font-size: 1.15vh;
+      color: #fbc02d;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-top: 0.2vh;
+    }
+
+    .clock {
+      text-align: right;
+    }
+
+    .clock b {
+      font-size: 3vh;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    .clock span {
+      display: block;
+      font-size: 1.15vh;
+      color: #94a3b8;
+      text-transform: capitalize;
+      font-weight: bold;
+    }
+
+    .panels {
+      display: flex;
+      gap: 1vw;
+      flex-shrink: 0;
+    }
+
+    .panel {
+      background: #131e2e;
+      border: 1px solid #1d2b3e;
+      border-radius: 6px;
+      padding: 0.7vh 1vw;
+    }
+
+    .panel-a { flex: 1.2; }
+    .panel-b { flex: 1; }
+
+    .panel h2 {
+      font-size: 1.15vh;
+      text-transform: uppercase;
+      color: #fbc02d;
+      margin-bottom: 0.4vh;
+      font-weight: bold;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4vw;
+    }
+
+    .chip {
+      background: #101a28;
+      border: 1px solid #1d2b3e;
+      border-radius: 4px;
+      padding: 0.25vh 0.7vw;
+      font-size: 1.25vh;
+      font-weight: bold;
+      color: #cbd5e1;
+    }
+
+    .chip b { color: #ffffff; }
+
+    .chip.now {
+      background: #064e3b;
+      color: #ffffff;
+      border: 1px solid #10b981;
+    }
+
+    .table-card {
+      flex: 1;
+      background: #131e2e;
+      border: 1px solid #1d2b3e;
+      border-radius: 6px;
+      padding: 0.3vh 0.4vw;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .table-grid {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .row {
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #1a2738;
+      flex: 1;
+    }
+
+    .row.header {
+      background: #101927;
+      font-weight: bold;
+      font-size: 1.25vh;
+      color: #fbc02d;
+      text-transform: uppercase;
+      border-bottom: 2px solid #1d2b3e;
+    }
+
+    .row.odd { background: #182538; }
+    .row.even { background: #131e2e; }
+
+    .cell {
+      padding: 0 0.4vw;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 1;
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .cell.name-col {
+      flex: 0 0 18vw;
+      justify-content: flex-start;
+      padding-left: 0.8vw;
+    }
+
+    .cell.today {
+      background-color: #1e3a5f;
+      border-left: 1px solid #0284c7;
+      border-right: 1px solid #0284c7;
+    }
+
+    .row.header .cell.today {
+      background-color: #0284c7;
+      color: #ffffff;
+    }
+
+    .name {
+      font-weight: bold;
+      font-size: 1.45vh;
+      color: #ffffff;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .badge {
+      font-size: 1.2vh;
+      font-weight: bold;
+      padding: 0.25vh 0.55vw;
+      border-radius: 4px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      margin: 0 2px;
+    }
+
+    .badge.m { background: #262010; color: #fde047; border: 1px solid #eab308; }
+    .badge.t { background: #0c2840; color: #38bdf8; border: 1px solid #0284c7; }
+    .badge.n { background: #291238; color: #f0abfc; border: 1px solid #9333ea; }
+    .badge.on { background: #059669; color: #ffffff; border: 1px solid #10b981; }
+
+    footer {
+      display: flex;
+      justify-content: center;
+      gap: 1.8vw;
+      font-size: 1.2vh;
+      color: #94a3b8;
+      align-items: center;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
   </style>
 </head>
 <body>
-  <h1>HORÁRIO DE COORDENAÇÃO - UNIFEB</h1>
-  <table>
-    <thead>
-      <tr>
-        <th>Coordenador(a)</th>
-        <th>Segunda</th>
-        <th>Terça</th>
-        <th>Quarta</th>
-        <th>Quinta</th>
-        <th>Sexta</th>
-        <th>Sábado</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr><td>Ana Carolina Souza</td><td>—</td><td>9h-13h, 18h-19h</td><td>13h-17h</td><td>13h-17h, 18h-22h</td><td>9h-12h, 13h-18h</td><td>—</td></tr>
-      <tr><td>Fabio Nóbile</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>—</td></tr>
-      <tr><td>Helenara Silva</td><td>13h-18h</td><td>13h-18h</td><td>—</td><td>13h-18h</td><td>—</td><td>—</td></tr>
-      <tr><td>Karina Macari</td><td>9h-12h</td><td>17h-19h</td><td>14h-18h</td><td>14h-17h, 19h-22h</td><td>—</td><td>—</td></tr>
-      <tr><td>Leonardo Costa</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>13h-18h</td><td>—</td></tr>
-    </tbody>
-  </table>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <img src="https://raw.githubusercontent.com/unifebarretos/assets/main/logo-UNIFEB.png" alt="UNIFEB" onerror="this.src='logo-UNIFEB.png'">
+        <div class="brand-text">
+          <h1>Horário de Coordenação</h1>
+          <small>SISTEMA DE GERENCIAMENTO · UNIFEB</small>
+        </div>
+      </div>
+      <div class="clock">
+        <b id="ck">--:--</b>
+        <span id="dt"></span>
+      </div>
+    </header>
+
+    <div class="panels">
+      <div class="panel panel-a">
+        <h2>Na sala agora</h2>
+        <div class="chips" id="A"></div>
+      </div>
+      <div class="panel panel-b">
+        <h2>Chegam hoje</h2>
+        <div class="chips" id="B"></div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-grid" id="tb"></div>
+    </div>
+
+    <footer>
+      <span class="badge m">Manhã</span>
+      <span class="badge t">Tarde</span>
+      <span class="badge n">Noite</span>
+      <span class="badge on">Em Atendimento Agora</span>
+      <span>• Coluna azul destacada = Dia de Hoje</span>
+    </footer>
+  </div>
+
+  <script>
+    var D = [
+      ["Ana Carolina Souza", {2:"9-13,18-19", 3:"13-17", 4:"13-17,18-22", 5:"9-12,13-18"}],
+      ["Fabio Nóbile", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Helenara Silva", {1:"13-18", 2:"13-18", 4:"13-18"}],
+      ["Karina Macari", {1:"9-12", 2:"17-19", 3:"14-18", 4:"14-17,19-22"}],
+      ["Leonardo Costa", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Leticia Catani", {1:"9-13,18-22", 2:"9-13,18-19", 3:"13-18", 4:"9-13,18-19", 5:"13-18"}],
+      ["Lucas Orlovic", {1:"17-19", 2:"17-19", 3:"14-18", 4:"17-19", 5:"10-12,16-19"}],
+      ["Marcelo Bezerra", {2:"18-22", 3:"16-19", 4:"18-19", 5:"17-19"}],
+      ["Maria Clara Calil", {1:"13-18", 2:"13-17,19-22", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Paulo Buzati", {2:"13-18", 4:"13-18"}],
+      ["Regilene Steluti", {1:"12-17", 2:"13-18", 3:"13-18", 4:"13-18", 5:"11-16"}],
+      ["Renata Camacho", {1:"13-18,19-22", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Tadeu Almeida", {1:"16.5-19", 2:"16.5-19", 3:"16.5-19", 4:"16.5-19", 5:"16.5-19", 6:"9-15"}],
+      ["Vanilda Bistaffa", {1:"20-22", 2:"9-12,17-19", 3:"14-18,19-22", 4:"17-18"}],
+      ["Vicente Junior", {1:"17-19", 2:"16-19", 3:"16-19", 4:"16-19", 5:"17-19", 6:"9-11"}],
+      ["Willians Bueno", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
+      ["Lucimara Ferreira", {1:"8-12,13-17", 2:"12-17", 3:"13-18", 4:"13-18", 5:"13-18", 6:"9-12"}]
+    ];
+
+    var DN = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+    function parseShift(s) {
+      var res = [];
+      var parts = s.split(",");
+      for (var i = 0; i < parts.length; i++) {
+        var range = parts[i].split("-");
+        res.push([parseFloat(range[0]), parseFloat(range[1])]);
+      }
+      return res;
+    }
+
+    function formatTime(h) {
+      var m = Math.round((h % 1) * 60);
+      return Math.floor(h) + "h" + (m ? (m < 10 ? "0" : "") + m : "");
+    }
+
+    function getPeriod(a) {
+      return a < 12 ? "m" : (a < 18 ? "t" : "n");
+    }
+
+    function draw() {
+      var d = new Date();
+      var wd = d.getDay();
+      var h = d.getHours() + (d.getMinutes() / 60);
+
+      var ckEl = document.getElementById("ck");
+      var dtEl = document.getElementById("dt");
+      if (ckEl) ckEl.innerHTML = d.toTimeString().slice(0, 5);
+      if (dtEl) dtEl.innerHTML = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+
+      var a = [], b = [];
+
+      for (var i = 0; i < D.length; i++) {
+        var name = D[i][0];
+        var schedule = D[i][1];
+        var sl = schedule[wd] ? parseShift(schedule[wd]) : [];
+        
+        var cur = null;
+        var nx = null;
+
+        for (var j = 0; j < sl.length; j++) {
+          if (h >= sl[j][0] && h < sl[j][1]) {
+            cur = sl[j];
+            break;
+          }
+          if (sl[j][0] > h) {
+            if (!nx || sl[j][0] < nx[0]) nx = sl[j];
+          }
+        }
+
+        if (cur) a.push([name, "até " + formatTime(cur[1])]);
+        else if (nx) b.push([name, nx[0]]);
+      }
+
+      b.sort(function(p, q) { return p[1] - q[1]; });
+
+      var htmlA = "";
+      if (a.length > 0) {
+        for (var k = 0; k < a.length; k++) {
+          htmlA += '<div class="chip now"><b>' + a[k][0] + '</b> (' + a[k][1] + ')</div>';
+        }
+      } else {
+        htmlA = '<span style="color:#94a3b8">Ninguém na sala neste momento</span>';
+      }
+      document.getElementById("A").innerHTML = htmlA;
+
+      var htmlB = "";
+      if (b.length > 0) {
+        for (var l = 0; l < b.length; l++) {
+          htmlB += '<div class="chip">' + b[l][0] + ' às <b>' + formatTime(b[l][1]) + '</b></div>';
+        }
+      } else {
+        htmlB = '<span style="color:#94a3b8">Ninguém mais chega hoje</span>';
+      }
+      document.getElementById("B").innerHTML = htmlB;
+
+      var days = [1, 2, 3, 4, 5, 6];
+      var htmlTb = '<div class="row header"><div class="cell name-col">Coordenador(a)</div>';
+      
+      for (var m = 0; m < days.length; m++) {
+        var x = days[m];
+        var isToday = (x === wd);
+        htmlTb += '<div class="cell ' + (isToday ? 'today' : '') + '">' + DN[x] + (isToday ? ' · HOJE' : '') + '</div>';
+      }
+      htmlTb += '</div>';
+
+      for (var n = 0; n < D.length; n++) {
+        var rowClass = (n % 2 === 0) ? 'odd' : 'even';
+        htmlTb += '<div class="row ' + rowClass + '"><div class="cell name-col name">' + D[n][0] + '</div>';
+        
+        for (var p = 0; p < days.length; p++) {
+          var dayIdx = days[p];
+          var dayIsToday = (dayIdx === wd);
+          var shiftStr = D[n][1][dayIdx];
+          
+          htmlTb += '<div class="cell ' + (dayIsToday ? 'today' : '') + '">';
+          if (shiftStr) {
+            var shifts = parseShift(shiftStr);
+            for (var q = 0; q < shifts.length; q++) {
+              var pStart = shifts[q][0];
+              var pEnd = shifts[q][1];
+              var isOn = dayIsToday && (h >= pStart && h < pEnd);
+              var badgeClass = isOn ? 'on' : getPeriod(pStart);
+              htmlTb += '<span class="badge ' + badgeClass + '">' + formatTime(pStart) + '–' + formatTime(pEnd) + '</span>';
+            }
+          } else {
+            htmlTb += '—';
+          }
+          htmlTb += '</div>';
+        }
+        htmlTb += '</div>';
+      }
+
+      document.getElementById("tb").innerHTML = htmlTb;
+    }
+
+    draw();
+    setInterval(draw, 15000);
+  </script>
 </body>
 </html>
