@@ -4,61 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Coordenação · Horários · UNIFEB</title>
-
-  <!-- Previne erro de favicon e melhora execução na Smart TV -->
   <link rel="icon" href="data:,">
-  <meta name="mobile-web-app-capable" content="yes">
-
   <style>
-    :root {
-      /* Palette do Controle de Chamados UNIFEB */
-      --bg: #0b111e;              
-      --card-bg: #131e2e;         
-      --card-border: #1d2b3e;     
-      --header-bg: #101927;       
-      --divider-color: #1a2738;   
-      
-      --gold-accent: #fbc02d;     
-      --blue-accent: #00a3ff;     
-      --text-white: #ffffff;
-      --text-muted: #94a3b8;
-      
-      /* Linhas zebradas */
-      --row-odd: #182538;
-      --row-even: #131e2e;
-      
-      /* Destaque HOJE Nítido */
-      --today-bg: #1e3a5f;
-      --today-header: #0284c7;
-
-      /* Pílulas de Horário com Borda Nítida */
-      --m-bg: #262010; 
-      --m-fg: #fde047; 
-      --m-border: #eab308;
-
-      --t-bg: #0c2840; 
-      --t-fg: #38bdf8; 
-      --t-border: #0284c7;
-
-      --n-bg: #291238; 
-      --n-fg: #f0abfc; 
-      --n-border: #9333ea;
-
-      --on-bg: #059669; 
-      --on-fg: #ffffff; 
-      --on-border: #10b981;
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body {
       height: 100vh;
       width: 100vw;
       overflow: hidden;
-      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-      background-color: var(--bg);
-      color: var(--text-white);
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: subpixel-antialiased;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #0b111e;
+      color: #ffffff;
     }
 
     .container {
@@ -73,11 +28,11 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--card-bg);
+      background: #131e2e;
       padding: 0.8vh 1.4vw;
       border-radius: 6px;
-      border: 1px solid var(--card-border);
-      border-left: 4px solid var(--gold-accent);
+      border: 1px solid #1d2b3e;
+      border-left: 4px solid #fbc02d;
       flex-shrink: 0;
     }
 
@@ -90,21 +45,20 @@
     .brand img {
       height: 4.2vh;
       width: auto;
-      object-fit: contain;
     }
 
     .brand-text h1 {
       font-size: 2.2vh;
-      font-weight: 700;
-      color: var(--text-white);
+      font-weight: bold;
+      color: #ffffff;
       line-height: 1.1;
     }
 
     .brand-text small {
       display: block;
       font-size: 1.15vh;
-      color: var(--gold-accent);
-      font-weight: 700;
+      color: #fbc02d;
+      font-weight: bold;
       text-transform: uppercase;
       margin-top: 0.2vh;
     }
@@ -115,39 +69,40 @@
 
     .clock b {
       font-size: 3vh;
-      font-weight: 700;
-      color: var(--text-white);
+      font-weight: bold;
+      color: #ffffff;
     }
 
     .clock span {
       display: block;
       font-size: 1.15vh;
-      color: var(--text-muted);
+      color: #94a3b8;
       text-transform: capitalize;
-      font-weight: 600;
+      font-weight: bold;
     }
 
     .panels {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
+      display: flex;
       gap: 1vw;
       flex-shrink: 0;
     }
 
     .panel {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #131e2e;
+      border: 1px solid #1d2b3e;
       border-radius: 6px;
       padding: 0.7vh 1vw;
     }
 
+    .panel-a { flex: 1.2; }
+    .panel-b { flex: 1; }
+
     .panel h2 {
       font-size: 1.15vh;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--gold-accent);
+      color: #fbc02d;
       margin-bottom: 0.4vh;
-      font-weight: 700;
+      font-weight: bold;
     }
 
     .chips {
@@ -158,30 +113,26 @@
 
     .chip {
       background: #101a28;
-      border: 1px solid var(--card-border);
+      border: 1px solid #1d2b3e;
       border-radius: 4px;
       padding: 0.25vh 0.7vw;
       font-size: 1.25vh;
-      font-weight: 600;
+      font-weight: bold;
       color: #cbd5e1;
     }
 
-    .chip b {
-      font-weight: 700;
-      color: #ffffff;
-    }
+    .chip b { color: #ffffff; }
 
     .chip.now {
       background: #064e3b;
       color: #ffffff;
       border: 1px solid #10b981;
-      font-weight: 700;
     }
 
     .table-card {
       flex: 1;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      background: #131e2e;
+      border: 1px solid #1d2b3e;
       border-radius: 6px;
       padding: 0.3vh 0.4vw;
       display: flex;
@@ -190,119 +141,88 @@
     }
 
     .table-grid {
-      display: grid;
-      grid-template-rows: repeat(18, minmax(0, 1fr));
       height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .row {
-      display: grid;
-      grid-template-columns: 18vw repeat(6, 1fr);
+      display: flex;
       align-items: center;
-      border-bottom: 1px solid var(--divider-color);
-      height: 100%;
+      border-bottom: 1px solid #1a2738;
+      flex: 1;
     }
 
     .row.header {
-      background: var(--header-bg);
-      font-weight: 700;
+      background: #101927;
+      font-weight: bold;
       font-size: 1.25vh;
-      color: var(--gold-accent);
+      color: #fbc02d;
       text-transform: uppercase;
-      border-bottom: 2px solid var(--card-border);
+      border-bottom: 2px solid #1d2b3e;
     }
 
-    .row:not(.header):nth-child(odd) {
-      background: var(--row-odd);
-    }
+    .row.odd { background: #182538; }
+    .row.even { background: #131e2e; }
 
-    .row:not(.header):nth-child(even) {
-      background: var(--row-even);
-    }
-
-    /* Centralização perfeita das células e respiro dos nomes */
     .cell {
       padding: 0 0.4vw;
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.4vw;
+      flex: 1;
       border-right: 1px solid rgba(255, 255, 255, 0.04);
     }
 
     .cell.name-col {
+      flex: 0 0 18vw;
       justify-content: flex-start;
       padding-left: 0.8vw;
     }
 
-    .row.header .cell {
-      border-right: 1px solid var(--card-border);
-    }
-
     .cell.today {
-      background-color: var(--today-bg) !important;
+      background-color: #1e3a5f;
       border-left: 1px solid #0284c7;
       border-right: 1px solid #0284c7;
     }
 
     .row.header .cell.today {
-      background-color: var(--today-header) !important;
-      color: #ffffff !important;
+      background-color: #0284c7;
+      color: #ffffff;
     }
 
     .name {
-      font-weight: 600;
+      font-weight: bold;
       font-size: 1.45vh;
       color: #ffffff;
       white-space: nowrap;
       overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     .badge {
       font-size: 1.2vh;
-      font-weight: 700;
+      font-weight: bold;
       padding: 0.25vh 0.55vw;
       border-radius: 4px;
       white-space: nowrap;
-      text-align: center;
       text-transform: uppercase;
+      margin: 0 2px;
     }
 
-    .badge.m { 
-      background: var(--m-bg); 
-      color: var(--m-fg); 
-      border: 1.5px solid var(--m-border); 
-    }
-
-    .badge.t { 
-      background: var(--t-bg); 
-      color: var(--t-fg); 
-      border: 1.5px solid var(--t-border); 
-    }
-
-    .badge.n { 
-      background: var(--n-bg); 
-      color: var(--n-fg); 
-      border: 1.5px solid var(--n-border); 
-    }
-
-    .badge.on { 
-      background: var(--on-bg); 
-      color: var(--on-fg); 
-      border: 1.5px solid var(--on-border); 
-      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4); 
-    }
+    .badge.m { background: #262010; color: #fde047; border: 1px solid #eab308; }
+    .badge.t { background: #0c2840; color: #38bdf8; border: 1px solid #0284c7; }
+    .badge.n { background: #291238; color: #f0abfc; border: 1px solid #9333ea; }
+    .badge.on { background: #059669; color: #ffffff; border: 1px solid #10b981; }
 
     footer {
       display: flex;
       justify-content: center;
       gap: 1.8vw;
       font-size: 1.2vh;
-      color: var(--text-muted);
+      color: #94a3b8;
       align-items: center;
-      font-weight: 600;
+      font-weight: bold;
       flex-shrink: 0;
     }
   </style>
@@ -324,11 +244,11 @@
     </header>
 
     <div class="panels">
-      <div class="panel">
+      <div class="panel panel-a">
         <h2>Na sala agora</h2>
         <div class="chips" id="A"></div>
       </div>
-      <div class="panel">
+      <div class="panel panel-b">
         <h2>Chegam hoje</h2>
         <div class="chips" id="B"></div>
       </div>
@@ -348,8 +268,7 @@
   </div>
 
   <script>
-    /* DADOS OFICIAIS EXTRAÍDOS DIRETO DO PDF 2º SEMESTRE 2026 */
-    const D = [
+    var D = [
       ["Ana Carolina Souza", {2:"9-13,18-19", 3:"13-17", 4:"13-17,18-22", 5:"9-12,13-18"}],
       ["Fabio Nóbile", {1:"13-18", 2:"13-18", 3:"13-18", 4:"13-18", 5:"13-18"}],
       ["Helenara Silva", {1:"13-18", 2:"13-18", 4:"13-18"}],
@@ -369,53 +288,121 @@
       ["Lucimara Ferreira", {1:"8-12,13-17", 2:"12-17", 3:"13-18", 4:"13-18", 5:"13-18", 6:"9-12"}]
     ];
 
-    const DN = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
-    const P = s => s.split(",").map(x => x.split("-").map(Number));
-    const f = h => { const m = Math.round((h % 1) * 60); return Math.floor(h) + "h" + (m ? String(m).padStart(2, "0") : ""); };
-    const per = a => a < 12 ? "m" : a < 18 ? "t" : "n";
+    var DN = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
+    function parseShift(s) {
+      var res = [];
+      var parts = s.split(",");
+      for (var i = 0; i < parts.length; i++) {
+        var range = parts[i].split("-");
+        res.push([parseFloat(range[0]), parseFloat(range[1])]);
+      }
+      return res;
+    }
+
+    function formatTime(h) {
+      var m = Math.round((h % 1) * 60);
+      return Math.floor(h) + "h" + (m ? (m < 10 ? "0" : "") + m : "");
+    }
+
+    function getPeriod(a) {
+      return a < 12 ? "m" : (a < 18 ? "t" : "n");
+    }
 
     function draw() {
-      const d = new Date();
-      const wd = d.getDay();
-      const h = d.getHours() + d.getMinutes() / 60;
+      var d = new Date();
+      var wd = d.getDay();
+      var h = d.getHours() + (d.getMinutes() / 60);
 
-      document.getElementById("ck").textContent = d.toTimeString().slice(0, 5);
-      document.getElementById("dt").textContent = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+      var ckEl = document.getElementById("ck");
+      var dtEl = document.getElementById("dt");
+      if (ckEl) ckEl.innerHTML = d.toTimeString().slice(0, 5);
+      if (dtEl) dtEl.innerHTML = d.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
 
-      const a = [], b = [];
-      D.forEach(([n, w]) => {
-        const sl = w[wd] ? P(w[wd]) : [];
-        const cur = sl.find(([x, y]) => h >= x && h < y);
-        const nx = sl.filter(([x]) => x > h).sort((p, q) => p[0] - q[0])[0];
-        if (cur) a.push([n, "até " + f(cur[1])]);
-        else if (nx) b.push([n, nx[0]]);
-      });
+      var a = [], b = [];
 
-      b.sort((p, q) => p[1] - q[1]);
+      for (var i = 0; i < D.length; i++) {
+        var name = D[i][0];
+        var schedule = D[i][1];
+        var sl = schedule[wd] ? parseShift(schedule[wd]) : [];
+        
+        var cur = null;
+        var nx = null;
 
-      document.getElementById("A").innerHTML = a.length 
-        ? a.map(([n, t]) => `<div class="chip now"><b>${n}</b> (${t})</div>`).join("") 
-        : `<span style="color:var(--text-muted)">Ninguém na sala neste momento</span>`;
+        for (var j = 0; j < sl.length; j++) {
+          if (h >= sl[j][0] && h < sl[j][1]) {
+            cur = sl[j];
+            break;
+          }
+          if (sl[j][0] > h) {
+            if (!nx || sl[j][0] < nx[0]) nx = sl[j];
+          }
+        }
 
-      document.getElementById("B").innerHTML = b.length 
-        ? b.map(([n, t]) => `<div class="chip">${n} às <b>${f(t)}</b></div>`).join("") 
-        : `<span style="color:var(--text-muted)">Ninguém mais chega hoje</span>`;
+        if (cur) a.push([name, "até " + formatTime(cur[1])]);
+        else if (nx) b.push([name, nx[0]]);
+      }
 
-      const days = [1, 2, 3, 4, 5, 6];
-      let html = `<div class="row header"><div class="cell name-col">Coordenador(a)</div>` + 
-        days.map(x => `<div class="cell ${x === wd ? 'today' : ''}">${DN[x]} ${x === wd ? '· HOJE' : ''}</div>`).join("") + `</div>`;
+      b.sort(function(p, q) { return p[1] - q[1]; });
 
-      html += D.map(([n, w]) => {
-        return `<div class="row"><div class="cell name-col name">${n}</div>` +
-          days.map(x => {
-            const s = w[x];
-            return `<div class="cell ${x === wd ? 'today' : ''}">` + 
-              (s ? P(s).map(([p, q]) => `<span class="badge ${x === wd && h >= p && h < q ? 'on' : per(p)}">${f(p)}–${f(q)}</span>`).join("") : '—') + 
-              `</div>`;
-          }).join("") + `</div>`;
-      }).join("");
+      var htmlA = "";
+      if (a.length > 0) {
+        for (var k = 0; k < a.length; k++) {
+          htmlA += '<div class="chip now"><b>' + a[k][0] + '</b> (' + a[k][1] + ')</div>';
+        }
+      } else {
+        htmlA = '<span style="color:#94a3b8">Ninguém na sala neste momento</span>';
+      }
+      document.getElementById("A").innerHTML = htmlA;
 
-      document.getElementById("tb").innerHTML = html;
+      var htmlB = "";
+      if (b.length > 0) {
+        for (var l = 0; l < b.length; l++) {
+          htmlB += '<div class="chip">' + b[l][0] + ' às <b>' + formatTime(b[l][1]) + '</b></div>';
+        }
+      } else {
+        htmlB = '<span style="color:#94a3b8">Ninguém mais chega hoje</span>';
+      }
+      document.getElementById("B").innerHTML = htmlB;
+
+      var days = [1, 2, 3, 4, 5, 6];
+      var htmlTb = '<div class="row header"><div class="cell name-col">Coordenador(a)</div>';
+      
+      for (var m = 0; m < days.length; m++) {
+        var x = days[m];
+        var isToday = (x === wd);
+        htmlTb += '<div class="cell ' + (isToday ? 'today' : '') + '">' + DN[x] + (isToday ? ' · HOJE' : '') + '</div>';
+      }
+      htmlTb += '</div>';
+
+      for (var n = 0; n < D.length; n++) {
+        var rowClass = (n % 2 === 0) ? 'odd' : 'even';
+        htmlTb += '<div class="row ' + rowClass + '"><div class="cell name-col name">' + D[n][0] + '</div>';
+        
+        for (var p = 0; p < days.length; p++) {
+          var dayIdx = days[p];
+          var dayIsToday = (dayIdx === wd);
+          var shiftStr = D[n][1][dayIdx];
+          
+          htmlTb += '<div class="cell ' + (dayIsToday ? 'today' : '') + '">';
+          if (shiftStr) {
+            var shifts = parseShift(shiftStr);
+            for (var q = 0; q < shifts.length; q++) {
+              var pStart = shifts[q][0];
+              var pEnd = shifts[q][1];
+              var isOn = dayIsToday && (h >= pStart && h < pEnd);
+              var badgeClass = isOn ? 'on' : getPeriod(pStart);
+              htmlTb += '<span class="badge ' + badgeClass + '">' + formatTime(pStart) + '–' + formatTime(pEnd) + '</span>';
+            }
+          } else {
+            htmlTb += '—';
+          }
+          htmlTb += '</div>';
+        }
+        htmlTb += '</div>';
+      }
+
+      document.getElementById("tb").innerHTML = htmlTb;
     }
 
     draw();
